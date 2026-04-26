@@ -1,0 +1,37 @@
+Primary Keys and Candidate Keys
+
+For the Patient table, the primary key is Patient_ID. We can also use Email or Contact Number as candidate keys, assuming those will always be unique to each person.
+
+For the Doctor table, Doctor_ID is the primary key. Based on standard hospital practices, Email or Medical License Number act as solid candidate keys.
+
+The Department table uses Department_ID as the primary key, and the department's Name serves as a candidate key.
+
+The Appointment table uses Appointment_ID as the primary key. There isn't a strict candidate key needed here. While a combination of date, time, and doctor could technically work, relying on the ID is much safer.
+
+The Service table relies on Service_ID as the primary key, with the Name acting as a candidate key.
+
+For the Medical Record table, Record_ID is the primary key. Because this has a strict one-to-one relationship with visits, the Appointment_ID also functions as a candidate key here.
+
+The Billing table follows the exact same logic. Bill_ID is the primary key, and the Appointment_ID acts as a candidate key.
+
+The Payment table just needs Payment_ID as its primary key.
+
+Finally, the Appointment Service table, which is our associative entity, uses a composite primary key. This is made up of both the Appointment_ID and the Service_ID combined.
+
+Relationship Types and Participation
+
+Patient to Appointment is a 1 to Many relationship. A patient can book multiple appointments over time. Participation is optional for the patient, meaning they can be registered in the system without having any bookings yet. However, participation is mandatory for the appointment side because an appointment cannot exist without being tied to a patient.
+
+Doctor to Appointment is also 1 to Many. A doctor handles multiple appointments. It is optional for the doctor, like a new hire with an empty schedule, but mandatory for the appointment since it needs an assigned doctor.
+
+Department to Doctor for employment is 1 to Many. A department contains multiple doctors. It is optional for the department, which could just be newly created, but mandatory for the doctor since every doctor must belong to a primary department.
+
+Department to Doctor for the department head is a 1 to 1 relationship. To handle the uncertainty about whether a head doctor is strictly mandatory, participation is set to optional on both sides. This allows the system to gracefully handle temporary leadership vacancies, and naturally, not every doctor is a department head.
+
+Appointment to Medical Record is a 1 to 1 relationship. A completed appointment results in a specific medical record. This is optional for the appointment side because future appointments won't have records generated yet. It is mandatory for the medical record side because a record cannot exist floating in the void; it must be tied to a specific visit.
+
+Appointment to Billing is a 1 to 1 relationship. An appointment generates a master invoice. It is optional for the appointment, as the bill is generated after the fact, but mandatory for the billing side to be tied to a visit.
+
+Billing to Payment is a 1 to Many relationship, which allows a single bill to receive multiple partial payments. This is optional for the billing side because a bill might sit unpaid initially, but mandatory for the payment side since a transaction has to apply to a specific invoice.
+
+Appointment to Service was a Many to Many relationship, but we resolved it using the associative Appointment Service table. The relationship from Appointment to this new table is 1 to Many, and it is optional. This addresses the question of whether an appointment can exist without services; a basic consultation might not require any extra catalog items. The relationship from Service to the associative table is also 1 to Many and optional, meaning a newly added catalog service might not have been used in any appointments yet.

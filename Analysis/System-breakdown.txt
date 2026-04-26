@@ -1,0 +1,58 @@
+1. Identified Entities
+
+Patient: The individual receiving medical care.
+
+Doctor: The medical professional providing care.
+
+Department: The operational unit within the hospital.
+
+Appointment: The scheduled interaction between a Patient and a Doctor.
+
+Service: The hospital's catalog of available procedures, tests, or treatments.
+
+Medical Record: The clinical documentation resulting from an appointment.
+
+Billing: The financial invoice generated for an appointment.
+
+Payment (Discovered Entity): Required to handle the "partial payment" business logic cleanly.
+
+Appointment_Service (Associative Entity): Required to resolve the Many-to-Many relationship between Appointments and Services, and to track quantities and historical pricing.
+
+2. Identified Attributes
+
+
+Patient: Patient_ID, First_Name, Last_Name, DOB, Gender, Blood_Group, Contact_Number, Email
+
+Doctor: Doctor_ID, First_Name, Last_Name, Specialization, Is_Active (to handle doctors leaving), Contact_Number
+
+Department: Department_ID, Name, Location
+
+Appointment: Appointment_ID, Appt_Date, Appt_Time, Status (Scheduled/Completed/Cancelled), Type (Consult/Follow-up/Emergency)
+
+Service: Service_ID, Name, Type (Test/Treatment/Surgery), Current_Price
+
+Medical Record: Record_ID, Diagnosis, Treatment_Plan, Prescription, Created_At
+
+Billing: Bill_ID, Total_Amount, Balance_Due, Status (Pending/Partial/Paid), Issued_Date
+
+Payment: Payment_ID, Amount, Payment_Date, Payment_Method
+
+Appointment_Service: Quantity, Billed_Price (locks the catalog price at the time of service)
+
+3. Identified Relationships
+
+Patient to Appointment: A patient can book multiple appointments over time, but a single appointment belongs to exactly one patient.
+
+Doctor to Appointment: A doctor conducts multiple appointments, but a single appointment is handled by exactly one doctor.
+
+Doctor to Department (Employment): A department employs multiple doctors, but a doctor primarily works in one department.
+
+Doctor to Department (Management): A department has one head doctor, and a doctor can head at most one department.
+
+Appointment to Medical Record: A completed appointment generates one medical record.
+
+Appointment to Billing: A completed appointment generates one consolidated bill/invoice.
+
+Billing to Payment: A single bill can receive multiple partial payments until the balance reaches zero.
+
+Appointment to Service: An appointment can include multiple services (e.g., an X-ray and a Blood Test), and a single service is performed across many different appointments. This Many-to-Many relationship is resolved by the Appointment_Service entity.
